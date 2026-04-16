@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_settings/app_settings.dart';
 
+import '../../../../core/bloc/locale_cubit.dart';
+import '../../../../core/bloc/locale_state.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
 import '../bloc/printer_bloc.dart';
@@ -115,6 +117,52 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () => context.push('/shop'),
                 ),
               ],
+            ),
+
+            const SizedBox(height: 24),
+
+            // Language Section
+            _buildSectionHeader('Language'),
+            BlocBuilder<LocaleCubit, LocaleState>(
+              builder: (context, state) {
+                return _buildListGroup(
+                  children: [
+                    _buildListItem(
+                      icon: Icons.language,
+                      title: state.locale.languageCode == 'tr'
+                          ? 'Türkçe'
+                          : 'English',
+                      subtitle: 'Select app language',
+                      trailingWidget: PopupMenuButton<String>(
+                        icon: const Icon(Icons.expand_more, color: Colors.grey),
+                        onSelected: (value) {
+                          context.read<LocaleCubit>().changeLocale(value);
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'tr',
+                            child: Row(
+                              children: [
+                                Text('🇹🇷 '),
+                                Text('Türkçe'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'en',
+                            child: Row(
+                              children: [
+                                Text('🇬🇧 '),
+                                Text('English'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
 
             const SizedBox(height: 24),

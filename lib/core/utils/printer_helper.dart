@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'currency_formatter.dart';
 
 class EscPos {
   static const List<int> init = [0x1B, 0x40];
@@ -178,7 +179,8 @@ class PrinterHelper {
     // Total (Align Right)
     bytes += EscPos.alignRight;
     bytes += EscPos.boldOn;
-    bytes += _textToBytes('TOTAL: $total');
+    bytes +=
+        _textToBytes('TOPLAM: ${CurrencyFormatter.formatForPrinter(total)}');
     bytes += EscPos.lineFeed;
     bytes += EscPos.boldOff;
     bytes += EscPos.lineFeed;

@@ -1,8 +1,9 @@
 import 'package:billing_app/core/widgets/primary_button.dart';
+import 'package:billing_app/core/utils/currency_formatter.dart';
+import 'package:billing_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import '../../../shop/presentation/bloc/shop_bloc.dart';
 import '../bloc/billing_bloc.dart';
@@ -17,6 +18,7 @@ class CheckoutPage extends StatefulWidget {
 class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     const borderColor = Color(0xFFE5E5EA);
 
     return PopScope(
@@ -28,8 +30,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Checkout',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            title: Text(l10n.checkout,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -45,22 +48,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
           body: BlocConsumer<BillingBloc, BillingState>(
             listener: (context, state) {
               if (state.printSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Printed successfully'),
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(l10n.printedSuccessfully),
                     backgroundColor: Colors.green));
-                // context.read<BillingBloc>().add(ClearCartEvent());
-                // context.go('/');
               }
             },
             builder: (context, billingState) {
               return BlocBuilder<ShopBloc, ShopState>(
                   builder: (context, shopState) {
-                String upiId = '';
-                String shopName = 'Shop';
+                String iban = '';
+                String bankName = '';
 
                 if (shopState is ShopLoaded) {
-                  upiId = shopState.shop.upiId;
-                  shopName = shopState.shop.name;
+                  iban = shopState.shop.iban;
+                  bankName = shopState.shop.bankName;
                 }
 
                 return Column(
@@ -71,7 +72,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             horizontal: 16, vertical: 16),
                         child: Column(
                           children: [
-                            // Table
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -94,7 +94,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     bottom: BorderSide(color: borderColor),
                                   ),
                                   children: [
-                                    // Header row
                                     TableRow(
                                       decoration: const BoxDecoration(
                                         color: Color(0xFFF8FAFC),
@@ -104,14 +103,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       ),
                                       children: [
                                         _buildHeaderCell(
-                                            'Product Name', TextAlign.left),
+                                            l10n.productName, TextAlign.left),
                                         _buildHeaderCell(
-                                            'Price', TextAlign.right),
+                                            l10n.price, TextAlign.right),
                                         _buildHeaderCell(
-                                            'Total', TextAlign.right),
+                                            l10n.total, TextAlign.right),
                                       ],
                                     ),
-                                    // Items rows
                                     ...billingState.cartItems.map((item) {
                                       return TableRow(
                                         children: [
@@ -120,11 +118,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             TextAlign.left,
                                           ),
                                           _buildDataCell(
-                                              '₹${item.product.price.toStringAsFixed(2)}',
+                                              CurrencyFormatter.formatSimple(
+                                                  item.product.price),
                                               TextAlign.right,
                                               isSubtitle: true),
                                           _buildDataCell(
-                                              '₹${item.total.toStringAsFixed(2)}',
+                                              CurrencyFormatter.formatSimple(
+                                                  item.total),
                                               TextAlign.right,
                                               isBold: true),
                                         ],
@@ -135,15 +135,55 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                             ),
                             const SizedBox(height: 24),
-
-                            const SizedBox(
-                                height: 120), // padding for bottom fixed bar
+                            if (iban.isNotEmpty) ...[
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border:
+                                      Border.all(color: Colors.blue.shade100),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10n.paymentInfo,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    if (bankName.isNotEmpty) ...[
+                                      Text(
+                                        '${l10n.bankName}: $bankName',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.blue.shade700,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                    ],
+                                    Text(
+                                      '${l10n.iban}: $iban',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.blue.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                            ],
+                            const SizedBox(height: 120),
                           ],
                         ),
                       ),
                     ),
-
-                    // Bottom Bar
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.9),
@@ -167,40 +207,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             ),
                             child: Column(
                               children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                upiId.isNotEmpty
-                                    ? Column(
-                                        children: [
-                                          const Text(
-                                            'Scan to Pay',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
-                                              letterSpacing: 1.1,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 12),
-                                          SizedBox(
-                                            width: 180,
-                                            height: 180,
-                                            child: PrettyQrView.data(
-                                              data:
-                                                  'upi://pay?pa=$upiId&pn=$shopName&am=${billingState.totalAmount.toStringAsFixed(2)}&cu=INR',
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : const SizedBox.shrink(),
-                                const SizedBox(height: 15),
+                                const SizedBox(height: 8),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'GRAND TOTAL',
+                                      l10n.grandTotal,
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -209,7 +222,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       ),
                                     ),
                                     Text(
-                                      '₹${billingState.totalAmount.toStringAsFixed(2)}',
+                                      CurrencyFormatter.formatSimple(
+                                          billingState.totalAmount),
                                       style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -234,13 +248,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         footer: shopState.shop.footerText));
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                         content:
-                                            Text('Shop details not loaded'),
+                                            Text(l10n.shopDetailsNotLoaded),
                                         backgroundColor: Colors.red));
                               }
                             },
-                            label: 'Print Receipt',
+                            label: l10n.printReceipt,
                             icon: Icons.print,
                             isLoading: billingState.isPrinting,
                           ),
