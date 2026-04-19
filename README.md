@@ -54,7 +54,7 @@ lib/
     └── shop/                   # Mağaza profil yapılandırması
 ```
     
-##🚀 Başlangıç (Getting Started)
+## 🚀 Başlangıç (Getting Started)
 
 Ön Koşullar
 Flutter SDK ^3.1.0 veya üzeri.
