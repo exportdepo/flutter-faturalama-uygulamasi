@@ -1,0 +1,37 @@
+name: Flutter CI
+
+# Projeyi her push/PR'da otomatik doğrular: statik analiz, testler ve derleme.
+# "Proje çalışıyor mu?" sorusunun sürekli cevabı bu pipeline'dır.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Doğrula (analyze + test + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları çöz
+        run: flutter pub get
+
+      - name: Kod üretimini çalıştır (Hive adapter, .g.dart)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Statik analiz
+        run: flutter analyze
+
+      - name: Birim ve widget testleri
+        run: flutter test
+
+      - name: Debug APK derlemesi (derlenebilirlik doğrulaması)
+        run: flutter build apk --debug
