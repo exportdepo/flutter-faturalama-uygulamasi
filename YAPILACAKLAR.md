@@ -48,6 +48,25 @@ widget test; toplam/KDV hesabının birim testleri; fiziksel yazıcıda fiş dö
 
 **Tahmini efor:** QR dahil ~1-2 gün | KDV dökümü ayrı ~yarım gün.
 
+**Ne zaman yapılmalı:**
+
+A, "talep belirleyecek" bir iş — hazır altyapısı olmadığı için zamanlamayı teknik durum değil, ihtiyaç ve tasarım kararları belirler. Tetikleyici sinyaller:
+
+- **Sahada ilk gerçek kullanım:** Uygulama bir mağazada fiilen kullanılmaya başlandığında ödeme tercihleri netleşir; bu feedback olmadan ödeme seçici UI'ı tahminle tasarlanmış olur.
+- **İşletme talebi:** Nakit/kart satışlarını ayırmak, gün sonu raporunda ödeme tipi dökümü lazım gibi ihtiyaçlar doğduğunda.
+- **Yasal/ümumi yönlendirme:** e-Arşiv fatura / GİB uyumu gibi bir hedef konulduğunda ödeme bilgisi zorunlu hale gelir.
+- **Ürün kararlarının netleşmesi:** QR içeriği, KDV oranı, para üstü yuvarlama kuralı gibi üç tasarım sorusu cevaplanmalıdır.
+
+**Önerilen sıralama:**
+
+| Sıra | Adım | Neden |
+|---|---|---|
+| 1. Şimdi | **B + C(form) + C2 + D** (~1-2 gün) | Hızlı, düşük risk; A'yı bekleyen hiçbir işi bloklamaz |
+| 2. IDEAL | **C-3 (satışta stok düşürme) + A birlikte** (~2-3 gün) | İkisini aynı "checkout akışı" sprint'inde yapmak, tek dosyalara iki kez dönmemiş olur |
+| 3. En son | **E** (bağımlılık modernizasyonu) | A ve C-3'ten sonra test kapsamı genişler; migration sırasında bu testler sayaç görevi görür |
+
+**Pratik özet:** Bugün yapılır — ancak sadece üç tasarım sorusuna cevap verebiliyorsanız. Cevaplar yoksa önce hazır-altyapı işlerini bitirin, sahaya çıkın. A'nın vadesi dolmaz: ARB anahtarları, pretty_qr paketi ve İBAN modeli sabit durur; bir yıl sonra da aynı planla uygulanır.
+
 ---
 
 ## B. Yazıcı Yönetim Kontrolleri (Ayarlar > Donanım) — 🟢
