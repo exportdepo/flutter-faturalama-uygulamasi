@@ -335,8 +335,8 @@ abstract class AppLocalizations {
   /// No description provided for @deleteProductConfirm.
   ///
   /// In tr, this message translates to:
-  /// **'Bu ürünü silmek istediğinize emin misiniz?'**
-  String get deleteProductConfirm;
+  /// **'\"{name}\" adlı ürünü silmek istediğinize emin misiniz?'**
+  String deleteProductConfirm(String name);
 
   /// No description provided for @confirmDelete.
   ///
@@ -367,6 +367,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Fiş Alt Metni'**
   String get footerText;
+
+  /// No description provided for @maxLengthHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'En fazla {count}'**
+  String maxLengthHint(int count);
 
   /// No description provided for @iban.
   ///
@@ -563,8 +569,8 @@ abstract class AppLocalizations {
   /// No description provided for @productNotFound.
   ///
   /// In tr, this message translates to:
-  /// **'Ürün bulunamadı'**
-  String get productNotFound;
+  /// **'Ürün bulunamadı: {barcode}'**
+  String productNotFound(String barcode);
 
   /// No description provided for @error.
   ///
@@ -613,6 +619,216 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'QR Kod'**
   String get qrCode;
+
+  /// No description provided for @reviewOrder.
+  ///
+  /// In tr, this message translates to:
+  /// **'Siparişi Onayla'**
+  String get reviewOrder;
+
+  /// No description provided for @turnOnCamera.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kamerayı Aç'**
+  String get turnOnCamera;
+
+  /// No description provided for @cameraOffHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Barkodları otomatik olarak taramak için kameranızı açın.'**
+  String get cameraOffHint;
+
+  /// No description provided for @cameraOffTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kamera kapalı'**
+  String get cameraOffTitle;
+
+  /// No description provided for @scannedItems.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okunan Ürünler'**
+  String get scannedItems;
+
+  /// No description provided for @totalItemsCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ürün toplam'**
+  String totalItemsCount(int count);
+
+  /// No description provided for @totalPrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'TOPLAM TUTAR'**
+  String get totalPrice;
+
+  /// No description provided for @emptyCartHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yukarıdaki kamerayla tarattığınız ürünler burada görünecek.'**
+  String get emptyCartHint;
+
+  /// No description provided for @scanBarcode.
+  ///
+  /// In tr, this message translates to:
+  /// **'Barkod Tara'**
+  String get scanBarcode;
+
+  /// No description provided for @alignBarcodeHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Barkodu çerçeve içine hizalayın'**
+  String get alignBarcodeHint;
+
+  /// No description provided for @productManagement.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün Yönetimi'**
+  String get productManagement;
+
+  /// No description provided for @scanOrEnterBarcode.
+  ///
+  /// In tr, this message translates to:
+  /// **'Barkodu tarayın veya girin'**
+  String get scanOrEnterBarcode;
+
+  /// No description provided for @tapToScanHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kamera tarayıcısını açmak için simgeye dokunun'**
+  String get tapToScanHint;
+
+  /// No description provided for @barcodeExists.
+  ///
+  /// In tr, this message translates to:
+  /// **'\"{barcode}\" barkodlu ürün zaten mevcut!'**
+  String barcodeExists(String barcode);
+
+  /// No description provided for @exampleProductName.
+  ///
+  /// In tr, this message translates to:
+  /// **'ör. Ayçiçek Yağı 1L'**
+  String get exampleProductName;
+
+  /// No description provided for @deleteProductTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürünü Sil'**
+  String get deleteProductTitle;
+
+  /// No description provided for @noProductsMatch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramanızla eşleşen ürün yok.'**
+  String get noProductsMatch;
+
+  /// No description provided for @errorWithMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata: {message}'**
+  String errorWithMessage(String message);
+
+  /// No description provided for @sectionManagement.
+  ///
+  /// In tr, this message translates to:
+  /// **'YÖNETİM'**
+  String get sectionManagement;
+
+  /// No description provided for @sectionLanguage.
+  ///
+  /// In tr, this message translates to:
+  /// **'DİL'**
+  String get sectionLanguage;
+
+  /// No description provided for @sectionHardware.
+  ///
+  /// In tr, this message translates to:
+  /// **'DONANIM'**
+  String get sectionHardware;
+
+  /// No description provided for @manageStockSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Stok ve barkodları yönetin'**
+  String get manageStockSubtitle;
+
+  /// No description provided for @businessInfoSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşletme bilgilerini ve adresi düzenleyin'**
+  String get businessInfoSubtitle;
+
+  /// No description provided for @selectAppLanguage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama dilini seçin'**
+  String get selectAppLanguage;
+
+  /// No description provided for @printDevice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazdırma Cihazı'**
+  String get printDevice;
+
+  /// No description provided for @noPrinterConnected.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazıcı bağlı değil'**
+  String get noPrinterConnected;
+
+  /// No description provided for @connected.
+  ///
+  /// In tr, this message translates to:
+  /// **'BAĞLI'**
+  String get connected;
+
+  /// No description provided for @pairPrinterHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni bir cihaz bağlamak için telefonunuzun Bluetooth ayarlarından eşleştirme yapın, ardından dönüp Yenile\'ye dokunun.'**
+  String get pairPrinterHint;
+
+  /// No description provided for @printerAutoConnectFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazıcıya otomatik bağlanılamadı!'**
+  String get printerAutoConnectFailed;
+
+  /// No description provided for @printerNotConfigured.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazıcı bağlı değil ve kayıtlı yazıcı bulunamadı!'**
+  String get printerNotConfigured;
+
+  /// No description provided for @printFailedWithMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazdırma başarısız: {message}'**
+  String printFailedWithMessage(String message);
+
+  /// No description provided for @noPairedDevices.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eşleştirilmiş cihaz bulunamadı.'**
+  String get noPairedDevices;
+
+  /// No description provided for @couldNotConnectPrinterAny.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eşleştirilmiş hiçbir cihaza bağlanılamadı.'**
+  String get couldNotConnectPrinterAny;
+
+  /// No description provided for @printerConnectFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazıcıya bağlanılamadı.'**
+  String get printerConnectFailed;
+
+  /// No description provided for @scanFailedWithMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarama başarısız: {message}'**
+  String scanFailedWithMessage(String message);
 }
 
 class _AppLocalizationsDelegate

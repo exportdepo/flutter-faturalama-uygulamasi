@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:billing_app/l10n/app_localizations.dart';
 import '../bloc/product_bloc.dart';
 import '../../domain/entities/product.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -61,8 +62,8 @@ class _ProductListPageState extends State<ProductListPage> {
               size: 28, color: Theme.of(context).primaryColor),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Product Management',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(AppLocalizations.of(context)!.productManagement,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
       ),
       body: Column(
@@ -72,6 +73,7 @@ class _ProductListPageState extends State<ProductListPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
+              final l10n = AppLocalizations.of(context)!;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -82,14 +84,14 @@ class _ProductListPageState extends State<ProductListPage> {
                           controller: _searchController,
                           textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
-                            hintText: 'Scan or enter barcode',
+                            hintText: l10n.scanOrEnterBarcode,
                             prefixIcon: Icon(
                               Icons.search,
                               color: Colors.grey[400],
                             ),
                           ),
                           validator:
-                              AppValidators.required('Please enter a barcode'),
+                              AppValidators.required(l10n.enterBarcode),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -108,8 +110,9 @@ class _ProductListPageState extends State<ProductListPage> {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  const Text('Tap the icon to open camera scanner',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF4C669A))),
+                  Text(l10n.tapToScanHint,
+                      style: const TextStyle(
+                          fontSize: 12, color: Color(0xFF4C669A))),
                 ],
               );
             }),
@@ -118,23 +121,32 @@ class _ProductListPageState extends State<ProductListPage> {
           Expanded(
             child: BlocConsumer<ProductBloc, ProductState>(
               listener: (context, state) {
-                if (state.status == ProductStatus.success &&
-                    state.message != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(state.message!),
-                        backgroundColor: Colors.green),
-                  );
+                final l10n = AppLocalizations.of(context)!;
+                if (state.status == ProductStatus.success) {
+                  final message = switch (state.lastAction) {
+                    ProductAction.add => l10n.productAdded,
+                    ProductAction.update => l10n.productUpdated,
+                    ProductAction.delete => l10n.productDeleted,
+                    _ => null,
+                  };
+                  if (message != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(message),
+                          backgroundColor: Colors.green),
+                    );
+                  }
                 } else if (state.status == ProductStatus.error &&
                     state.message != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text(state.message!),
+                        content: Text(l10n.errorWithMessage(state.message!)),
                         backgroundColor: Colors.red),
                   );
                 }
               },
               builder: (context, state) {
+                final l10n = AppLocalizations.of(context)!;
                 if (state.status == ProductStatus.loading &&
                     state.products.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
@@ -142,10 +154,10 @@ class _ProductListPageState extends State<ProductListPage> {
 
                 if (state.products.isEmpty) {
                   if (state.status == ProductStatus.error) {
-                    return Center(child: Text('Error: ${state.message}'));
+                    return Center(
+                        child: Text(l10n.errorWithMessage(state.message ?? '')));
                   }
-                  return const Center(
-                      child: Text('No products found. Add some!'));
+                  return Center(child: Text(l10n.noProducts));
                 }
 
                 final filteredProducts = state.products
@@ -155,8 +167,7 @@ class _ProductListPageState extends State<ProductListPage> {
                     .toList();
 
                 if (filteredProducts.isEmpty) {
-                  return const Center(
-                      child: Text('No products match your search.'));
+                  return Center(child: Text(l10n.noProductsMatch));
                 }
 
                 return ListView.separated(
@@ -261,23 +272,25 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   void _confirmDelete(BuildContext context, Product product) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (innerContext) {
         return AlertDialog(
-          title: const Text('Delete Product'),
-          content: Text('Are you sure you want to delete ${product.name}?'),
+          title: Text(l10n.deleteProductTitle),
+          content: Text(l10n.deleteProductConfirm(product.name)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(innerContext),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () {
                 context.read<ProductBloc>().add(DeleteProduct(product.id));
                 Navigator.pop(innerContext);
               },
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              child: Text(l10n.delete,
+                  style: const TextStyle(color: Colors.red)),
             ),
           ],
         );

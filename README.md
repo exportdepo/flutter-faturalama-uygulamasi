@@ -16,6 +16,7 @@ Bu uygulama, küçük ve orta ölçekli perakende mağazaları için tam teşekk
 - **🌍 Tam Yerelleştirme**: Türkçe ve İngilizce dil desteği, yerel para birimi (TL) ve tarih formatları.
 - **📦 Ürün Yönetim Sistemi**: Barkod/QR kod destekli envanter öğeleri için tam CRUD işlemleri.
 - **🛒 Akıllı Ödeme Sistemi**: Kamera tabanlı barkod tarama veya manuel giriş ile hızlı sepet oluşturma.
+- **🔊 Tarama Ses Efekti**: Barkod algılandığında `audioplayers` ile sesli geri bildirim (`assets/sound/scan.mp3`).
 - **🖨️ Bluetooth Termal Yazdırma**: `print_bluetooth_thermal` entegrasyonu ile anlık fiziksel makbuz çıktısı.
 - **⚙️ Mağaza Ayarları**: Makbuzlar üzerinde dinamik olarak görünen özelleştirilebilir işletme detayları.
 - **📶 Çevrimdışı Öncelikli Mimari**: Yıldırım hızında NoSQL veri depolama için `Hive` kullanımı. İnternet bağlantısı gerektirmez.
@@ -33,6 +34,7 @@ Uygulama; ölçeklenebilirlik ve test edilebilirliği sağlamak amacıyla **Clea
 - **Local Database**: `hive` & `hive_flutter`
 - **Functional Programming**: `fpdart` (Either pattern ile hata yönetimi)
 - **Hardware Integrations**: `mobile_scanner`, `print_bluetooth_thermal`
+- **Ses Geri Bildirimi**: `audioplayers` (varlık tabanlı tarama sesi)
 
 ---
 
@@ -85,6 +87,61 @@ Uygulamayı çalıştırın:
 
 
 flutter run
+```
+
+## ✅ Projeyi Doğrulama (Verification)
+
+Kod tabanının sağlıklı olduğunu varsaymadan önce sırasıyla şu komutları çalıştırın:
+
+```bash
+# 1) Bağımlılıkların çözüldüğünü doğrula
+flutter pub get
+
+# 2) Kod üretimi (Hive adapter'ları, .g.dart dosyaları) güncel mi?
+#    Önbelleğe takılmış/eksik üretilmiş dosya varsa yeniden üretir.
+dart run build_runner build --delete-conflicting-outputs
+
+# 3) Statik analiz hata vermemeli
+flutter analyze
+
+# 4) Birim/widget testleri yeşil olmalı
+flutter test
+
+# 5) Uygulamayı cihaz/emülatörde ayağa kaldır ve manuel smoke test yap
+flutter devices        # bağlı cihazları listeler
+flutter run
+
+# 6) (Opsiyonel) Dağıtım paketi derlenebiliyor mu?
+flutter build apk --release   # Android
+flutter build ipa              # iOS (macOS gerekir)
+```
+
+Bu adımları her push'ta otomatik çalıştırmak için `.github/workflows/flutter-ci.yml`
+içinde hazır bir GitHub Actions pipeline'ı bulunur.
+
+Yarım kalan ve planlanan işler **[YAPILACAKLAR.md](YAPILACAKLAR.md)** dosyasında
+madde madde (kanıt, hazır altyapı, doğrulama ölçütü ve efor tahminiyle) listelenmiştir.
+
+### Test kapsamı (`flutter test`)
+
+| Dosya | Ne doğrular |
+|---|---|
+| `test/widget_test.dart` | Uygulama açılış (smoke) testi: `MyApp` gerçek Hive + DI kurulumu, mock'lanmış kamera kanallarıyla ayağa kalkar ve ana POS ekranı render edilir. Varsayılan Türkçe açılışı ve çalışma anında İngilizceye geçişi de doğrular. |
+| `test/billing_bloc_test.dart` | Sepet mantığı: barkod tarama, adet artırma/azaltma, hatalı taramada **tipli hata durumu** (l10n eşlemesine hazır) ve sepet toplamı. |
+| `test/product_hive_repository_test.dart` | Gerçek Hive kutusuyla uçtan uca CRUD (ekle/listele/güncelle/sil) ve `ProductBloc` entegrasyonu. |
+| `test/core_utils_test.dart` | `CartItem`, `AppValidators` ve `CurrencyFormatter` birim testleri. |
+
+### Manuel smoke test senaryosu (cihaz üzerinde)
+
+1. Uygulama açıldığında ana ekranda barkod tarayıcı görünür.
+2. **Products** ekranından yeni ürün ekleyin (barkod + fiyat).
+3. Ana ekrandan ürünü barkoduyla tarayın; sepete düşmeli ve toplam güncellenmeli.
+4. **Review Order** ile ödeme ekranına gidip işlemi tamamlayın.
+5. **Settings**'ten Bluetooth termal yazıcıyı bağlayıp test çıktısı alın *(bu adım fiziksel donanım gerektirir; emülatörde doğrulanamaz)*.
+
+> Not: Kamera, Bluetooth yazıcı ve titreşim gibi donanım bağımlılıkları yalnızca
+> fiziksel cihazda test edilebilir; test otomasyonu bu kanalları mock'lar.
+
 👨‍💻 Geliştirici ve Katkı
 exportdepo
 

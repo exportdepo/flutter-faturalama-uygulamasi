@@ -39,12 +39,27 @@
   "enterStock": "Stok miktarını girin",
   "saveProduct": "Ürünü Kaydet",
   "updateProduct": "Ürünü Güncelle",
-  "deleteProductConfirm": "Bu ürünü silmek istediğinize emin misiniz?",
+  "deleteProductConfirm": "\"{name}\" adlı ürünü silmek istediğinize emin misiniz?",
+  "@deleteProductConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "confirmDelete": "Silmeyi Onayla",
   "shopName": "Mağaza Adı",
   "shopAddress": "Adres",
   "phoneNumber": "Telefon Numarası",
   "footerText": "Fiş Alt Metni",
+  "maxLengthHint": "En fazla {count}",
+  "@maxLengthHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "iban": "IBAN",
   "bankName": "Banka Adı",
   "enterShopName": "Mağaza adını girin",
@@ -77,7 +92,14 @@
   "language": "Dil",
   "turkish": "Türkçe",
   "english": "İngilizce",
-  "productNotFound": "Ürün bulunamadı",
+  "productNotFound": "Ürün bulunamadı: {barcode}",
+  "@productNotFound": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
   "error": "Hata",
   "success": "Başarılı",
   "loading": "Yükleniyor...",
@@ -85,5 +107,75 @@
   "paymentInfo": "Ödeme Bilgileri",
   "cashPayment": "Nakit Ödeme",
   "transferPayment": "Havale/EFT",
-  "qrCode": "QR Kod"
+  "qrCode": "QR Kod",
+  "reviewOrder": "Siparişi Onayla",
+  "turnOnCamera": "Kamerayı Aç",
+  "cameraOffHint": "Barkodları otomatik olarak taramak için kameranızı açın.",
+  "cameraOffTitle": "Kamera kapalı",
+  "scannedItems": "Okunan Ürünler",
+  "totalItemsCount": "{count} ürün toplam",
+  "@totalItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalPrice": "TOPLAM TUTAR",
+  "emptyCartHint": "Yukarıdaki kamerayla tarattığınız ürünler burada görünecek.",
+  "scanBarcode": "Barkod Tara",
+  "alignBarcodeHint": "Barkodu çerçeve içine hizalayın",
+  "productManagement": "Ürün Yönetimi",
+  "scanOrEnterBarcode": "Barkodu tarayın veya girin",
+  "tapToScanHint": "Kamera tarayıcısını açmak için simgeye dokunun",
+  "barcodeExists": "\"{barcode}\" barkodlu ürün zaten mevcut!",
+  "@barcodeExists": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "exampleProductName": "ör. Ayçiçek Yağı 1L",
+  "deleteProductTitle": "Ürünü Sil",
+  "noProductsMatch": "Aramanızla eşleşen ürün yok.",
+  "errorWithMessage": "Hata: {message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionManagement": "YÖNETİM",
+  "sectionLanguage": "DİL",
+  "sectionHardware": "DONANIM",
+  "manageStockSubtitle": "Stok ve barkodları yönetin",
+  "businessInfoSubtitle": "İşletme bilgilerini ve adresi düzenleyin",
+  "selectAppLanguage": "Uygulama dilini seçin",
+  "printDevice": "Yazdırma Cihazı",
+  "noPrinterConnected": "Yazıcı bağlı değil",
+  "connected": "BAĞLI",
+  "pairPrinterHint": "Yeni bir cihaz bağlamak için telefonunuzun Bluetooth ayarlarından eşleştirme yapın, ardından dönüp Yenile'ye dokunun.",
+  "printerAutoConnectFailed": "Yazıcıya otomatik bağlanılamadı!",
+  "printerNotConfigured": "Yazıcı bağlı değil ve kayıtlı yazıcı bulunamadı!",
+  "printFailedWithMessage": "Yazdırma başarısız: {message}",
+  "@printFailedWithMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "noPairedDevices": "Eşleştirilmiş cihaz bulunamadı.",
+  "couldNotConnectPrinterAny": "Eşleştirilmiş hiçbir cihaza bağlanılamadı.",
+  "printerConnectFailed": "Yazıcıya bağlanılamadı.",
+  "scanFailedWithMessage": "Tarama başarısız: {message}",
+  "@scanFailedWithMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  }
 }

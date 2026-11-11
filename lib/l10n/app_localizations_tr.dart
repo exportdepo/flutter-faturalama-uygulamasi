@@ -126,8 +126,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get updateProduct => 'Ürünü Güncelle';
 
   @override
-  String get deleteProductConfirm =>
-      'Bu ürünü silmek istediğinize emin misiniz?';
+  String deleteProductConfirm(String name) {
+    return '\"$name\" adlı ürünü silmek istediğinize emin misiniz?';
+  }
 
   @override
   String get confirmDelete => 'Silmeyi Onayla';
@@ -143,6 +144,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get footerText => 'Fiş Alt Metni';
+
+  @override
+  String maxLengthHint(int count) {
+    return 'En fazla $count';
+  }
 
   @override
   String get iban => 'IBAN';
@@ -241,7 +247,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get english => 'İngilizce';
 
   @override
-  String get productNotFound => 'Ürün bulunamadı';
+  String productNotFound(String barcode) {
+    return 'Ürün bulunamadı: $barcode';
+  }
 
   @override
   String get error => 'Hata';
@@ -266,4 +274,124 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get qrCode => 'QR Kod';
+
+  @override
+  String get reviewOrder => 'Siparişi Onayla';
+
+  @override
+  String get turnOnCamera => 'Kamerayı Aç';
+
+  @override
+  String get cameraOffHint =>
+      'Barkodları otomatik olarak taramak için kameranızı açın.';
+
+  @override
+  String get cameraOffTitle => 'Kamera kapalı';
+
+  @override
+  String get scannedItems => 'Okunan Ürünler';
+
+  @override
+  String totalItemsCount(int count) {
+    return '$count ürün toplam';
+  }
+
+  @override
+  String get totalPrice => 'TOPLAM TUTAR';
+
+  @override
+  String get emptyCartHint =>
+      'Yukarıdaki kamerayla tarattığınız ürünler burada görünecek.';
+
+  @override
+  String get scanBarcode => 'Barkod Tara';
+
+  @override
+  String get alignBarcodeHint => 'Barkodu çerçeve içine hizalayın';
+
+  @override
+  String get productManagement => 'Ürün Yönetimi';
+
+  @override
+  String get scanOrEnterBarcode => 'Barkodu tarayın veya girin';
+
+  @override
+  String get tapToScanHint => 'Kamera tarayıcısını açmak için simgeye dokunun';
+
+  @override
+  String barcodeExists(String barcode) {
+    return '\"$barcode\" barkodlu ürün zaten mevcut!';
+  }
+
+  @override
+  String get exampleProductName => 'ör. Ayçiçek Yağı 1L';
+
+  @override
+  String get deleteProductTitle => 'Ürünü Sil';
+
+  @override
+  String get noProductsMatch => 'Aramanızla eşleşen ürün yok.';
+
+  @override
+  String errorWithMessage(String message) {
+    return 'Hata: $message';
+  }
+
+  @override
+  String get sectionManagement => 'YÖNETİM';
+
+  @override
+  String get sectionLanguage => 'DİL';
+
+  @override
+  String get sectionHardware => 'DONANIM';
+
+  @override
+  String get manageStockSubtitle => 'Stok ve barkodları yönetin';
+
+  @override
+  String get businessInfoSubtitle => 'İşletme bilgilerini ve adresi düzenleyin';
+
+  @override
+  String get selectAppLanguage => 'Uygulama dilini seçin';
+
+  @override
+  String get printDevice => 'Yazdırma Cihazı';
+
+  @override
+  String get noPrinterConnected => 'Yazıcı bağlı değil';
+
+  @override
+  String get connected => 'BAĞLI';
+
+  @override
+  String get pairPrinterHint =>
+      'Yeni bir cihaz bağlamak için telefonunuzun Bluetooth ayarlarından eşleştirme yapın, ardından dönüp Yenile\'ye dokunun.';
+
+  @override
+  String get printerAutoConnectFailed => 'Yazıcıya otomatik bağlanılamadı!';
+
+  @override
+  String get printerNotConfigured =>
+      'Yazıcı bağlı değil ve kayıtlı yazıcı bulunamadı!';
+
+  @override
+  String printFailedWithMessage(String message) {
+    return 'Yazdırma başarısız: $message';
+  }
+
+  @override
+  String get noPairedDevices => 'Eşleştirilmiş cihaz bulunamadı.';
+
+  @override
+  String get couldNotConnectPrinterAny =>
+      'Eşleştirilmiş hiçbir cihaza bağlanılamadı.';
+
+  @override
+  String get printerConnectFailed => 'Yazıcıya bağlanılamadı.';
+
+  @override
+  String scanFailedWithMessage(String message) {
+    return 'Tarama başarısız: $message';
+  }
 }

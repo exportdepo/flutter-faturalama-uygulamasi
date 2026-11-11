@@ -1,8 +1,10 @@
+import 'package:billing_app/core/services/sound_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:billing_app/l10n/app_localizations.dart';
 
 import '../../../billing/presentation/bloc/billing_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -53,6 +55,9 @@ class _HomePageState extends State<HomePage> {
 
         _lastScanTimes[rawValue] = now;
 
+        // Play scan sound
+        await SoundService.instance.playScanSound();
+
         // Vibrate
         final hasVibrator = await Vibration.hasVibrator();
         if (hasVibrator == true) {
@@ -67,6 +72,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// Bloc katmanından gelen tipli hatayı l10n mesajına çevirir.
+  String _billingErrorMessage(BillingError error) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (error.type) {
+      BillingErrorType.productNotFound =>
+        l10n.productNotFound(error.barcode ?? ''),
+      BillingErrorType.printerAutoConnectFailed =>
+        l10n.printerAutoConnectFailed,
+      BillingErrorType.printerNotConfigured => l10n.printerNotConfigured,
+      BillingErrorType.printFailed =>
+        l10n.printFailedWithMessage(error.rawMessage ?? ''),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +96,7 @@ class _HomePageState extends State<HomePage> {
           if (state.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error!),
+                content: Text(_billingErrorMessage(state.error!)),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -108,6 +127,7 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomSheet:
           BlocBuilder<BillingBloc, BillingState>(builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
         return PrimaryButton(
           onPressed: state.cartItems.isEmpty
               ? null
@@ -117,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                   if (_isCameraOn && mounted) _scannerController.start();
                 },
           icon: Icons.payment,
-          label: 'Review Order',
+          label: l10n.reviewOrder,
         );
       }),
     );
@@ -205,6 +225,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCameraOffState() {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       color: const Color(0xFF1E293B), // slate-800
       child: Column(
@@ -222,18 +243,18 @@ class _HomePageState extends State<HomePage> {
                 const Icon(Icons.videocam_off, color: Colors.white, size: 32),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Camera is turned off',
-            style: TextStyle(
+          Text(
+            l10n.cameraOffTitle,
+            style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              'Turn on your camera to start scanning barcodes and items automatically.',
+              l10n.cameraOffHint,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70, fontSize: 12),
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ),
           const SizedBox(height: 24),
@@ -246,8 +267,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
             icon: const Icon(Icons.videocam),
-            label: const Text('Turn on Camera',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            label: Text(l10n.turnOnCamera,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             onPressed: () {
               setState(() => _isCameraOn = true);
               _scannerController.start();
@@ -332,6 +353,7 @@ class _HomePageState extends State<HomePage> {
           // Header
           BlocBuilder<BillingBloc, BillingState>(
             builder: (context, state) {
+              final l10n = AppLocalizations.of(context)!;
               final totalItems =
                   state.cartItems.fold<int>(0, (sum, i) => sum + i.quantity);
               return Padding(
@@ -343,10 +365,10 @@ class _HomePageState extends State<HomePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Scanned Items',
-                            style: TextStyle(
+                        Text(l10n.scannedItems,
+                            style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w600)),
-                        Text('$totalItems items total',
+                        Text(l10n.totalItemsCount(totalItems),
                             style: const TextStyle(
                                 fontSize: 12, color: Colors.grey)),
                       ],
@@ -354,8 +376,8 @@ class _HomePageState extends State<HomePage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text('TOTAL PRICE',
-                            style: TextStyle(
+                        Text(l10n.totalPrice,
+                            style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey,
@@ -406,6 +428,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildEmptyCart() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -422,15 +445,15 @@ class _HomePageState extends State<HomePage> {
                 Icon(Icons.shopping_basket, size: 40, color: Colors.grey[300]),
           ),
           const SizedBox(height: 16),
-          const Text('List is empty',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(l10n.emptyCart,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
-              'Scanned items will appear here as you scan them with the camera above.',
+              l10n.emptyCartHint,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ),
         ],

@@ -26,8 +26,9 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
       ScanBarcodeEvent event, Emitter<BillingState> emit) async {
     final result = await getProductByBarcodeUseCase(event.barcode);
     result.fold(
-      (failure) =>
-          emit(state.copyWith(error: 'Product not found: ${event.barcode}')),
+      (failure) => emit(state.copyWith(
+          error: BillingError(BillingErrorType.productNotFound,
+              barcode: event.barcode))),
       (product) {
         add(AddProductToCartEvent(product));
       },
@@ -36,8 +37,10 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
 
   void _onAddProductToCart(
       AddProductToCartEvent event, Emitter<BillingState> emit) {
-    // Clear error when adding
-    final cleanState = state.copyWith(error: null);
+    // Clear error when adding.
+    // Not: copyWith(error: null) hatayı temizlemez (null ?? this.error =>
+    // eski değer kalır); hatayı temizlemek için clearError bayrağı kullanılır.
+    final cleanState = state.copyWith(clearError: true);
 
     final existingIndex = cleanState.cartItems
         .indexWhere((item) => item.product.id == event.product.id);
@@ -92,13 +95,15 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
         final connected = await printerHelper.connect(savedMac);
         if (!connected) {
           emit(state.copyWith(
-              error: 'Failed to auto-connect to printer!', clearError: false));
+              error: const BillingError(
+                  BillingErrorType.printerAutoConnectFailed),
+              clearError: false));
           emit(state.copyWith(clearError: true));
           return;
         }
       } else {
         emit(state.copyWith(
-            error: 'Printer not connected & no saved printer found!',
+            error: const BillingError(BillingErrorType.printerNotConfigured),
             clearError: false));
         emit(state.copyWith(clearError: true));
         return;
@@ -130,7 +135,10 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
       emit(state.copyWith(isPrinting: false, printSuccess: true));
     } catch (e) {
       emit(state.copyWith(
-          isPrinting: false, error: 'Print failed: $e', clearError: false));
+          isPrinting: false,
+          error: BillingError(BillingErrorType.printFailed,
+              rawMessage: e.toString()),
+          clearError: false));
       // Reset error instantly avoids sticky error
       emit(state.copyWith(clearError: true));
     }

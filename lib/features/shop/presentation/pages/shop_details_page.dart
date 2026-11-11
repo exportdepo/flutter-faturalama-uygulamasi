@@ -99,7 +99,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
               context.pop();
             } else if (state is ShopError) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(state.message), backgroundColor: Colors.red));
+                  content: Text(l10n.errorWithMessage(state.message)),
+                  backgroundColor: Colors.red));
             }
           },
           buildWhen: (previous, current) =>
@@ -186,7 +187,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InputLabel(text: l10n.footerText),
-                        Text('Max 60',
+                        Text(l10n.maxLengthHint(60),
                             style: TextStyle(
                                 fontSize: 11, color: Colors.grey[400])),
                       ],

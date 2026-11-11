@@ -126,8 +126,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateProduct => 'Update Product';
 
   @override
-  String get deleteProductConfirm =>
-      'Are you sure you want to delete this product?';
+  String deleteProductConfirm(String name) {
+    return 'Are you sure you want to delete $name?';
+  }
 
   @override
   String get confirmDelete => 'Confirm Delete';
@@ -143,6 +144,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get footerText => 'Footer Text';
+
+  @override
+  String maxLengthHint(int count) {
+    return 'Max $count';
+  }
 
   @override
   String get iban => 'IBAN';
@@ -241,7 +247,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get english => 'English';
 
   @override
-  String get productNotFound => 'Product not found';
+  String productNotFound(String barcode) {
+    return 'Product not found: $barcode';
+  }
 
   @override
   String get error => 'Error';
@@ -266,4 +274,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qrCode => 'QR Code';
+
+  @override
+  String get reviewOrder => 'Review Order';
+
+  @override
+  String get turnOnCamera => 'Turn on Camera';
+
+  @override
+  String get cameraOffHint =>
+      'Turn on your camera to start scanning barcodes and items automatically.';
+
+  @override
+  String get cameraOffTitle => 'Camera is turned off';
+
+  @override
+  String get scannedItems => 'Scanned Items';
+
+  @override
+  String totalItemsCount(int count) {
+    return '$count items total';
+  }
+
+  @override
+  String get totalPrice => 'TOTAL PRICE';
+
+  @override
+  String get emptyCartHint =>
+      'Scanned items will appear here as you scan them with the camera above.';
+
+  @override
+  String get scanBarcode => 'Scan Barcode';
+
+  @override
+  String get alignBarcodeHint => 'Align barcode within frame';
+
+  @override
+  String get productManagement => 'Product Management';
+
+  @override
+  String get scanOrEnterBarcode => 'Scan or enter barcode';
+
+  @override
+  String get tapToScanHint => 'Tap the icon to open camera scanner';
+
+  @override
+  String barcodeExists(String barcode) {
+    return 'Product with barcode \"$barcode\" already exists!';
+  }
+
+  @override
+  String get exampleProductName => 'e.g. Basmati Rice';
+
+  @override
+  String get deleteProductTitle => 'Delete Product';
+
+  @override
+  String get noProductsMatch => 'No products match your search.';
+
+  @override
+  String errorWithMessage(String message) {
+    return 'Error: $message';
+  }
+
+  @override
+  String get sectionManagement => 'MANAGEMENT';
+
+  @override
+  String get sectionLanguage => 'LANGUAGE';
+
+  @override
+  String get sectionHardware => 'HARDWARE';
+
+  @override
+  String get manageStockSubtitle => 'Manage stock and barcodes';
+
+  @override
+  String get businessInfoSubtitle => 'Edit business info & address';
+
+  @override
+  String get selectAppLanguage => 'Select app language';
+
+  @override
+  String get printDevice => 'Print Device';
+
+  @override
+  String get noPrinterConnected => 'No printer connected';
+
+  @override
+  String get connected => 'CONNECTED';
+
+  @override
+  String get pairPrinterHint =>
+      'To connect a new device, tap on the Settings gear to pair in phone\'s Bluetooth settings, then return and hit Refresh.';
+
+  @override
+  String get printerAutoConnectFailed => 'Failed to auto-connect to printer!';
+
+  @override
+  String get printerNotConfigured =>
+      'Printer not connected & no saved printer found!';
+
+  @override
+  String printFailedWithMessage(String message) {
+    return 'Print failed: $message';
+  }
+
+  @override
+  String get noPairedDevices => 'No paired devices found.';
+
+  @override
+  String get couldNotConnectPrinterAny =>
+      'Could not connect to any paired device.';
+
+  @override
+  String get printerConnectFailed => 'Failed to connect to printer.';
+
+  @override
+  String scanFailedWithMessage(String message) {
+    return 'Scan failed: $message';
+  }
 }

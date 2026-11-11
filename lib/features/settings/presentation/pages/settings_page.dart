@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:billing_app/l10n/app_localizations.dart';
 
 import '../../../../core/bloc/locale_cubit.dart';
 import '../../../../core/bloc/locale_state.dart';
@@ -28,10 +29,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(l10n.settings,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -100,20 +102,20 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 24),
 
             // Management Section
-            _buildSectionHeader('Management'),
+            _buildSectionHeader(l10n.sectionManagement),
             _buildListGroup(
               children: [
                 _buildListItem(
                   icon: Icons.qr_code_scanner,
-                  title: 'Products',
-                  subtitle: 'Manage stock and barcodes',
+                  title: l10n.products,
+                  subtitle: l10n.manageStockSubtitle,
                   onTap: () => context.push('/products'),
                 ),
                 _buildDivider(),
                 _buildListItem(
                   icon: Icons.storefront,
-                  title: 'Shop Details',
-                  subtitle: 'Edit business info & address',
+                  title: l10n.shopDetails,
+                  subtitle: l10n.businessInfoSubtitle,
                   onTap: () => context.push('/shop'),
                 ),
               ],
@@ -122,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 24),
 
             // Language Section
-            _buildSectionHeader('Language'),
+            _buildSectionHeader(l10n.sectionLanguage),
             BlocBuilder<LocaleCubit, LocaleState>(
               builder: (context, state) {
                 return _buildListGroup(
@@ -130,30 +132,30 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildListItem(
                       icon: Icons.language,
                       title: state.locale.languageCode == 'tr'
-                          ? 'Türkçe'
-                          : 'English',
-                      subtitle: 'Select app language',
+                          ? l10n.turkish
+                          : l10n.english,
+                      subtitle: l10n.selectAppLanguage,
                       trailingWidget: PopupMenuButton<String>(
                         icon: const Icon(Icons.expand_more, color: Colors.grey),
                         onSelected: (value) {
                           context.read<LocaleCubit>().changeLocale(value);
                         },
                         itemBuilder: (context) => [
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'tr',
                             child: Row(
                               children: [
-                                Text('🇹🇷 '),
-                                Text('Türkçe'),
+                                const Text('🇹🇷 '),
+                                Text(l10n.turkish),
                               ],
                             ),
                           ),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'en',
                             child: Row(
                               children: [
-                                Text('🇬🇧 '),
-                                Text('English'),
+                                const Text('🇬🇧 '),
+                                Text(l10n.english),
                               ],
                             ),
                           ),
@@ -168,16 +170,17 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 24),
 
             // Hardware Section
-            _buildSectionHeader('Hardware'),
+            _buildSectionHeader(l10n.sectionHardware),
             BlocConsumer<PrinterBloc, PrinterState>(
               listener: (context, state) {
-                if (state.errorMessage != null) {
+                if (state.errorCode != null || state.errorMessage != null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(state.errorMessage!),
+                      content: Text(_printerErrorMessage(
+                          state.errorCode, state.errorMessage)),
                       backgroundColor: Colors.red));
                 } else if (state.status == PrinterStatus.connected) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Connected to printer'),
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(l10n.printerConnected),
                       backgroundColor: Colors.green));
                 }
               },
@@ -186,13 +189,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     _buildListItem(
                       icon: Icons.print,
-                      title: 'Print Device',
+                      title: l10n.printDevice,
                       subtitleWidget: Row(
                         children: [
                           Text(
                             state.connectedMac != null
-                                ? (state.connectedName ?? 'Printer connected')
-                                : 'No printer connected',
+                                ? (state.connectedName ?? l10n.printerConnected)
+                                : l10n.noPrinterConnected,
                             style: TextStyle(
                                 fontSize: 12, color: Colors.grey[500]),
                           ),
@@ -206,7 +209,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: Colors.teal[200]!)),
                               child: Text(
-                                'CONNECTED',
+                                l10n.connected,
                                 style: TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
@@ -253,7 +256,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: Text(
-                "To connect a new device, tap on the Settings gear to pair in phone's Bluetooth settings, then return and hit Refresh.",
+                l10n.pairPrinterHint,
                 style: TextStyle(
                     fontSize: 11,
                     fontStyle: FontStyle.italic,
@@ -266,6 +269,18 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  /// Yazıcı hata kodlarını l10n mesajlarına çevirir.
+  String _printerErrorMessage(PrinterErrorCode? code, String? rawMessage) {
+    final l10n = AppLocalizations.of(context)!;
+    return switch (code) {
+      PrinterErrorCode.noPairedDevices => l10n.noPairedDevices,
+      PrinterErrorCode.couldNotConnectAny => l10n.couldNotConnectPrinterAny,
+      PrinterErrorCode.connectFailed => l10n.printerConnectFailed,
+      PrinterErrorCode.scanFailed => l10n.scanFailedWithMessage(rawMessage ?? ''),
+      null => l10n.errorWithMessage(rawMessage ?? ''),
+    };
   }
 
   Widget _buildSectionHeader(String title) {

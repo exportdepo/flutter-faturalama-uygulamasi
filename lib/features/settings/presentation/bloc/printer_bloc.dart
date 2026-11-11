@@ -33,7 +33,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       if (devices.isEmpty) {
         emit(state.copyWith(
           status: PrinterStatus.scanFailure,
-          errorMessage: 'No paired devices found.',
+          errorCode: PrinterErrorCode.noPairedDevices,
           devices: [],
         ));
         return;
@@ -59,13 +59,14 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       if (!connected) {
         emit(state.copyWith(
           status: PrinterStatus.scanFailure,
-          errorMessage: 'Could not connect to any paired device.',
+          errorCode: PrinterErrorCode.couldNotConnectAny,
           devices: devices,
         ));
       }
     } catch (e) {
       emit(state.copyWith(
         status: PrinterStatus.scanFailure,
+        errorCode: PrinterErrorCode.scanFailed,
         errorMessage: e.toString(),
       ));
     }
@@ -83,6 +84,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     } catch (e) {
       emit(state.copyWith(
         status: PrinterStatus.scanFailure,
+        errorCode: PrinterErrorCode.scanFailed,
         errorMessage: e.toString(),
       ));
     }
@@ -102,7 +104,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     } else {
       emit(state.copyWith(
         status: PrinterStatus.connectionFailure,
-        errorMessage: 'Failed to connect to printer',
+        errorCode: PrinterErrorCode.connectFailed,
       ));
     }
   }
